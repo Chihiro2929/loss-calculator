@@ -81,7 +81,8 @@ export default function LossCalculator() {
       "勤怠管理": 0.04,
       "受発注": 0.08,
       "請求": 0.08,
-      "入札": 3.0,
+      "入札": 2.0,
+      "クラウド連携": 1.5,
       "その他": 0.03
     };
     let taskMultiplier = pcTasks.reduce((acc, task) => acc + (taskImpact[task] || 0), 0);
@@ -223,7 +224,7 @@ export default function LossCalculator() {
         <div className="text-sm text-red-500 mt-2">※ すべて選んでください</div>
         
         <div className="grid grid-cols-3 gap-4 mt-4">
-          {['メール', '業務報告', 'ネットバンキング', 'Web会議', 'グループチャット', '給与計算', '勤怠管理', '受発注','請求', '入札','その他'].map((task) => (
+          {['メール', '業務報告', 'ネットバンキング', 'Web会議', 'グループチャット', '給与計算', '勤怠管理', '受発注','請求', '入札','クラウド連携','その他'].map((task) => (
             <button 
               key={task} 
               onClick={() => setPcTasks(pcTasks.includes(task) ? pcTasks.filter(t => t !== task) : [...pcTasks, task])}
