@@ -29,6 +29,7 @@ export default function LossCalculator() {
       "教育": 120000,
       "飲食": 300000,
       "サービス業": 120000,
+      "建設業": 600000,
       "その他": 120000
     }[industry] || 120000;
 
@@ -36,9 +37,9 @@ export default function LossCalculator() {
 
     let pcUsageMultiplier = {
       "1時間未満": 1.0,
-      "3時間未満": 1.2,
-      "5時間未満": 1.5,
-      "5時間以上": 2.0
+      "3時間未満": 1.1,
+      "5時間未満": 1.2,
+      "5時間以上": 1.5
     }[pcUsage] || 1.0;
     loss *= pcUsageMultiplier;
 
@@ -55,18 +56,18 @@ export default function LossCalculator() {
 
     let pcCountMultiplier = {
       "5台未満": 1.0,
-      "10台未満": 1.2,
-      "20台未満": 1.5,
-      "20台以上": 2.0
+      "10台未満": 1.1,
+      "20台未満": 1.2,
+      "20台以上": 1.3
     }[pcCount] || 1.0;
     loss *= pcCountMultiplier;
 
     let employeeMultiplier = {
       "3人未満": 1.0,
-      "5人未満": 1.2,
-      "10人未満": 1.5,
-      "20人未満": 1.8,
-      "20人以上": 2.2
+      "5人未満": 1.01,
+      "10人未満": 1.1,
+      "20人未満": 1.2,
+      "20人以上": 1.5
     }[employees] || 1.0;
     loss *= employeeMultiplier;
 
@@ -79,6 +80,8 @@ export default function LossCalculator() {
       "給与計算": 0.07,
       "勤怠管理": 0.04,
       "受発注": 0.08,
+      "請求": 0.08,
+      "入札": 3.0,
       "その他": 0.03
     };
     let taskMultiplier = pcTasks.reduce((acc, task) => acc + (taskImpact[task] || 0), 0);
@@ -113,11 +116,22 @@ export default function LossCalculator() {
         ⚡ 回線停止の影響診断 ⚡
       </h1>
 
+      {/* 説明文を追加 */}
+<div className="text-center bg-gray-100 p-4 rounded-md shadow-sm mb-6">
+  <p className="text-lg font-semibold text-gray-800">
+    🔍 もし突然回線が止まったら…？
+  </p>
+  <p className="text-gray-700 mt-2">
+    インターネットや社内ネットワークの停止は、業務の遅延や損失につながる可能性があります。<br />
+    本ツールでは、<span className="font-semibold">業種・業務内容・設備の利用状況</span> などをもとに、回線停止による影響を試算します。
+  </p>
+</div>
+
       {/* ① 業種 */}
       <div className="mb-10">
         <label className="text-2xl font-bold text-gray-700 border-b-2 pb-2 block">① 業種</label>
         <div className="grid grid-cols-3 gap-4 mt-4">
-          {['製造業', 'IT・通信', '小売・流通', '医療・福祉', '教育', '飲食', 'サービス業', 'その他'].map((option) => (
+          {['製造業', 'IT・通信', '小売・流通', '医療・福祉', '教育', '飲食', 'サービス業', '建設業','その他'].map((option) => (
             <button key={option} onClick={() => setIndustry(option)}
               className={`px-6 py-2 rounded-md border-2 font-bold transition-all 
                 ${industry === option ? 'bg-black text-white border-white shadow-lg' 
@@ -209,7 +223,7 @@ export default function LossCalculator() {
         <div className="text-sm text-red-500 mt-2">※ すべて選んでください</div>
         
         <div className="grid grid-cols-3 gap-4 mt-4">
-          {['メール', '業務報告', 'ネットバンキング', 'Web会議', 'グループチャット', '給与計算', '勤怠管理', '受発注', 'その他'].map((task) => (
+          {['メール', '業務報告', 'ネットバンキング', 'Web会議', 'グループチャット', '給与計算', '勤怠管理', '受発注','請求', '入札','その他'].map((task) => (
             <button 
               key={task} 
               onClick={() => setPcTasks(pcTasks.includes(task) ? pcTasks.filter(t => t !== task) : [...pcTasks, task])}

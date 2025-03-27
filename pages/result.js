@@ -20,7 +20,7 @@ export default function Result() {
     <div className="p-12 max-w-6xl mx-auto bg-white rounded-lg shadow-md text-center">
       {/* **タイトル** */}
       <h1 className="text-3xl font-extrabold mb-8 text-gray-800 bg-gray-200 py-4 shadow-md rounded-lg">
-        🚨 回線停止のリスク試算結果
+         回線停止のリスク試算結果
       </h1>
 
       {/* **損失金額の表示** */}
