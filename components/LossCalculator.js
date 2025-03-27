@@ -12,67 +12,100 @@ export default function LossCalculator() {
   const [pcTasks, setPcTasks] = useState([]);
   const [equipment, setEquipment] = useState([]);
 
-    // 📌 calculateLoss 関数を追加
-    const calculateLoss = () => {
-        console.log("Industry:", industry);
-        console.log("PC Usage:", pcUsage);
-        console.log("Equipment:", equipment);
-        let baseLoss = {
-          "製造業": 600000,
-          "IT・通信": 120000,
-          "小売・流通": 300000,
-          "医療・福祉": 600000,
-          "教育": 120000,
-          "飲食": 300000,
-          "サービス業": 120000,
-          "その他": 120000
-        }[industry] || 120000;
-    
-        let loss = baseLoss;
-    
-        let pcUsageMultiplier = {
-          "1時間未満": 1.0,
-          "3時間未満": 1.2,
-          "5時間未満": 1.5,
-          "5時間以上": 2.0
-        }[pcUsage] || 1.0;
-    
-        loss *= pcUsageMultiplier;
-    
-        let equipmentImpact = {
-          "電話": 0.05,
-          "FAX": 0.03,
-          "防犯カメラ": 0.02,
-          "レジ": 0.10,
-          "VPN": 0.08,
-          "その他": 0.05
-        };
-    
-        let equipmentMultiplier = equipment.reduce((acc, item) => acc + (equipmentImpact[item] || 0), 0);
+  // 📌 calculateLoss 関数を追加
+  const calculateLoss = () => {
+    console.log("Industry:", industry);
+    console.log("PC Usage:", pcUsage);
+    console.log("Equipment:", equipment);
+    console.log("PC Count:", pcCount);
+    console.log("Employees:", employees);
+    console.log("PC Tasks:", pcTasks);
+
+    let baseLoss = {
+      "製造業": 600000,
+      "IT・通信": 120000,
+      "小売・流通": 300000,
+      "医療・福祉": 600000,
+      "教育": 120000,
+      "飲食": 300000,
+      "サービス業": 120000,
+      "その他": 120000
+    }[industry] || 120000;
+
+    let loss = baseLoss;
+
+    let pcUsageMultiplier = {
+      "1時間未満": 1.0,
+      "3時間未満": 1.2,
+      "5時間未満": 1.5,
+      "5時間以上": 2.0
+    }[pcUsage] || 1.0;
+    loss *= pcUsageMultiplier;
+
+    let equipmentImpact = {
+      "電話": 0.05,
+      "FAX": 0.03,
+      "防犯カメラ": 0.02,
+      "レジ": 0.10,
+      "VPN": 0.08,
+      "その他": 0.05
+    };
+    let equipmentMultiplier = equipment.reduce((acc, item) => acc + (equipmentImpact[item] || 0), 0);
     loss *= (1 + equipmentMultiplier);
+
+    let pcCountMultiplier = {
+      "5台未満": 1.0,
+      "10台未満": 1.2,
+      "20台未満": 1.5,
+      "20台以上": 2.0
+    }[pcCount] || 1.0;
+    loss *= pcCountMultiplier;
+
+    let employeeMultiplier = {
+      "3人未満": 1.0,
+      "5人未満": 1.2,
+      "10人未満": 1.5,
+      "20人未満": 1.8,
+      "20人以上": 2.2
+    }[employees] || 1.0;
+    loss *= employeeMultiplier;
+
+    let taskImpact = {
+      "メール": 0.02,
+      "業務報告": 0.03,
+      "ネットバンキング": 0.05,
+      "Web会議": 0.10,
+      "グループチャット": 0.03,
+      "給与計算": 0.07,
+      "勤怠管理": 0.04,
+      "受発注": 0.08,
+      "その他": 0.03
+    };
+    let taskMultiplier = pcTasks.reduce((acc, task) => acc + (taskImpact[task] || 0), 0);
+    loss *= (1 + taskMultiplier);
 
     console.log("Final Loss:", loss);
     return Math.round(loss).toLocaleString();
-};
-    
-      // 📌 handleSubmit を修正
-      const handleSubmit = () => {
-        const lossAmount = calculateLoss();
-        router.push({
-          pathname: '/result',
-          query: {
-            industry,
-            loss: lossAmount,
-            holiday,
-            workHours,
-            employees,
-            pcCount,
-            pcUsage,
-            pcTasks: pcTasks.join(','),
-            equipment: equipment.join(','),
-          },
-        });
-      };
+  };
+
+  // 📌 handleSubmit を修正
+  const handleSubmit = () => {
+    const lossAmount = calculateLoss();
+    router.push({
+      pathname: '/result',
+      query: {
+        industry,
+        loss: lossAmount,
+        holiday,
+        workHours,
+        employees,
+        pcCount,
+        pcUsage,
+        pcTasks: pcTasks.join(','),
+        equipment: equipment.join(','),
+      },
+    });
+  };
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md">
